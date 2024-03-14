@@ -3,17 +3,19 @@
 
 
 def canUnlockAll(boxes):
-    # Initialize a set to keep track of unlocked boxes
+    """Looks for the next opened box
+    Args:
+        opened_boxes (dict): Dictionary which contains boxes already opened
+    Returns:
+        list: List with the keys contained in the opened box
+    """
+
     unlocked = set([0])
-    # Initialize a list to process boxes that can be unlocked
     keys = [0]
     while keys:
-        # Get the current box's keys
         current_keys = boxes[keys.pop()]
         for key in current_keys:
-            # If the key corresponds to a box we haven't unlocked yet
             if key not in unlocked and key < len(boxes):
                 unlocked.add(key)
                 keys.append(key)
-    # If the number of unlocked boxes equals the total number of boxes, return True
     return len(unlocked) == len(boxes)
