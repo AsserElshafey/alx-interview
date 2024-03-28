@@ -2,41 +2,54 @@
 """ Module for 0-stats"""
 
 import sys
-from collections import Counter
 
 
-def print_stats(total_size, status_counts):
+def print_msg(dict_sc, total_file_size):
     """
-    Prints the current statistics:
-    total file size and status code counts.
+    Method to print
+    Args:
+        dict_sc: dict of status codes
+        total_file_size: total of the file
+    Returns:
+        Nothing
     """
 
-    print(f"Total file size: {total_size}")
-    for code, count in sorted(status_counts.items()):
-        print(f"{code}: {count}")
+    print("File size: {}".format(total_file_size))
+    for key, val in sorted(dict_sc.items()):
+        if val != 0:
+            print("{}: {}".format(key, val))
 
 
-total_size = 0
-status_counts = Counter()
-line_count = 0
+total_file_size = 0
+code = 0
+counter = 0
+dict_sc = {"200": 0,
+           "301": 0,
+           "400": 0,
+           "401": 0,
+           "403": 0,
+           "404": 0,
+           "405": 0,
+           "500": 0}
 
 try:
     for line in sys.stdin:
-        parts = line.strip().split()
+        parsed_line = line.split()  # ✄ trimming
+        parsed_line = parsed_line[::-1]  # inverting
 
-        if len(parts) != 6 or not parts[4].isdigit() or not parts[5].isdigit():
-            continue
+        if len(parsed_line) > 2:
+            counter += 1
 
-        total_size += int(parts[5])
-        status_counts[int(parts[4])] += 1
+            if counter <= 10:
+                total_file_size += int(parsed_line[0])  # file size
+                code = parsed_line[1]  # status code
 
-        line_count += 1
+                if (code in dict_sc.keys()):
+                    dict_sc[code] += 1
 
-        if line_count % 10 == 0 or line_count == 1:
-            print_stats(total_size, status_counts)
-            total_size = 0
-            status_counts.clear()
+            if (counter == 10):
+                print_msg(dict_sc, total_file_size)
+                counter = 0
 
-except KeyboardInterrupt:
-    print_stats(total_size, status_counts)
-    sys.exit(0)
+finally:
+    print_msg(dict_sc, total_file_size)
