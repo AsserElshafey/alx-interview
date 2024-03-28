@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+""" Module for 0-stats"""
 
 import sys
 from collections import Counter
