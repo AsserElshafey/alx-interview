@@ -17,6 +17,7 @@ total_file_size = 0
 
 def print_metrics():
     """Print the metrics for file size and status code counts."""
+
     print(f"Total file size: File size: {total_file_size}")
     for code in sorted(status_code_counts):
         if status_code_counts[code] > 0:
@@ -25,6 +26,7 @@ def print_metrics():
 
 def signal_handler(sig, frame):
     """Handle keyboard interruption (CTRL + C)."""
+
     print_metrics()
     sys.exit(0)
 
