@@ -6,7 +6,11 @@ from collections import Counter
 
 
 def print_stats(total_size, status_counts):
-    """Prints the current statistics: total file size and status code counts."""
+    """
+    Prints the current statistics:
+    total file size and status code counts.
+    """
+
     print(f"Total file size: {total_size}")
     for code, count in sorted(status_counts.items()):
         print(f"{code}: {count}")
@@ -18,10 +22,8 @@ line_count = 0
 
 try:
     for line in sys.stdin:
-        # Split the line based on spaces
         parts = line.strip().split()
 
-        # Check if format is correct (4 parts + status code + size)
         if len(parts) != 6 or not parts[4].isdigit() or not parts[5].isdigit():
             continue
 
@@ -30,7 +32,6 @@ try:
 
         line_count += 1
 
-        # Print stats every 10 lines or on keyboard interrupt
         if line_count % 10 == 0 or line_count == 1:
             print_stats(total_size, status_counts)
             total_size = 0
