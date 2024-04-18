@@ -1,18 +1,38 @@
 #!/usr/bin/node
-const axios = require('axios');
+const request = require('request');
 
-async function getMovieCharacters(movieId) {
-  try {
-    const movieResponse = await axios.get(`https://swapi-api.alx-tools.com/api/films/${movieId}`);
-    const characters = movieResponse.data.characters;
+function getMovieCharacters(movieId) {
+  const url = `https://swapi-api.alx-tools.com/api/films/${movieId}`;
 
-    for (const characterUrl of characters) {
-      const characterResponse = await axios.get(characterUrl);
-      console.log(characterResponse.data.name);
+  request(url, (error, response, body) => {
+    if (error) {
+      console.error("Error retrieving movie data:", error);
+      return;
     }
-  } catch (error) {
-    console.error("Error retrieving movie data:", error);
-  }
+
+    if (response.statusCode === 200) {
+      const data = JSON.parse(body);
+      const characters = data.characters;
+
+      characters.forEach(characterUrl => {
+        request(characterUrl, (characterError, characterResponse, characterBody) => {
+          if (characterError) {
+            console.error("Error retrieving character data:", characterError);
+            return;
+          }
+
+          if (characterResponse.statusCode === 200) {
+            const characterData = JSON.parse(characterBody);
+            console.log(characterData.name);
+          } else {
+            console.error(`Error getting character: ${characterUrl}`, characterResponse.statusCode);
+          }
+        });
+      });
+    } else {
+      console.error(`Error retrieving movie data: ${response.statusCode}`);
+    }
+  });
 }
 
 if (process.argv.length > 2) {
