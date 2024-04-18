@@ -1,3 +1,4 @@
+#!/usr/bin/node
 const axios = require('axios');
 
 async function getMovieCharacters(movieId) {
